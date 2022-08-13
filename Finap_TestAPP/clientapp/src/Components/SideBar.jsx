@@ -12,17 +12,17 @@ export default function SlideBar(){
                 <ul className="nav nav-pills flex-column mb-auto mx-3">
                     <li>
                         <a href="/" className="nav-link link-dark text-light">
-                            <i className="bi bi-grid"></i> &nbsp; Home
+                            <i className="bi bi-house-door"></i> &nbsp; Home
                         </a>
                     </li>
                     <li>
                         <a href="/classrooms" className="nav-link link-dark text-light">
-                            <i className="bi bi-person"></i> &nbsp; Classrooms
+                            <i className="bi bi-easel"></i> &nbsp; Classrooms
                         </a>
                     </li>
                     <li>
                         <a href="/students" className="nav-link link-dark text-light">
-                            <i className="bi bi-box"></i> &nbsp; Students
+                            <i className="bi bi-people"></i> &nbsp; Students
                         </a>
                     </li>
                     <li>
@@ -32,7 +32,7 @@ export default function SlideBar(){
                     </li>
                     <li>
                         <a href="/teachers" className="nav-link link-dark text-light">
-                            <i className="bi bi-people"></i> &nbsp; Teachers
+                            <i className="bi bi-person"></i> &nbsp; Teachers
                         </a>
                     </li>
                 </ul>

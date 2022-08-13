@@ -1,4 +1,5 @@
 ﻿using Finap_TestAPP.Models;
+using Finap_TestAPP.Models.DTO;
 using Finap_TestAPP.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,9 @@ namespace Finap_TestAPP.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Student>>> GetAll()
+        public async Task<ActionResult<List<StudentGetDTO>>> GetAll()
         {
-            List<Student> students = _studentRepository.GetStudents().ToList();
+            List<StudentGetDTO> students = _studentRepository.GetStudents().ToList();
             return Ok(students);
         }
 
@@ -87,7 +88,7 @@ namespace Finap_TestAPP.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Student>> Delete(int id)
         {
             var isOK = _studentRepository.DeleteStudent(id);

@@ -1,10 +1,11 @@
 ﻿using Finap_TestAPP.Models;
+using Finap_TestAPP.Models.DTO;
 
 namespace Finap_TestAPP.Repositories.Interfaces
 {
     public interface IStudentRepository
     {
-        public List<Student> GetStudents();
+        public List<StudentGetDTO> GetStudents();
 
         public Student GetOneStudent(int id);
 

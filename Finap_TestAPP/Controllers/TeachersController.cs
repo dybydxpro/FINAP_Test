@@ -87,7 +87,7 @@ namespace Finap_TestAPP.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Teacher>> Delete(int id)
         {
             var isOK = _teacherRepository.DeleteTeacher(id);

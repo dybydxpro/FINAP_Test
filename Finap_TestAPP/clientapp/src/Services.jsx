@@ -22,8 +22,8 @@ class Services{
         return httpCommon.put(`/Classrooms/ChangeStatus/${id}`);
     }
 
-    ClassroomDelete(){
-        return httpCommon.delete("/Classrooms");
+    ClassroomDelete(id){
+        return httpCommon.delete(`/Classrooms/${id}`);
     }
 
     //Students Functions
@@ -47,8 +47,8 @@ class Services{
         return httpCommon.put(`/Students/ChangeStatus/${id}`);
     }
 
-    StudentDelete(){
-        return httpCommon.delete("/Students");
+    StudentDelete(id){
+        return httpCommon.delete(`/Students/${id}`);
     }
 
     //Subjects Functions
@@ -72,8 +72,8 @@ class Services{
         return httpCommon.put(`/Subjects/ChangeStatus/${id}`);
     }
 
-    SubjectDelete(){
-        return httpCommon.delete("/Subjects");
+    SubjectDelete(id){
+        return httpCommon.delete(`/Subjects/${id}`);
     }
 
     //Teachers Functions
@@ -97,8 +97,8 @@ class Services{
         return httpCommon.put(`/Teachers/ChangeStatus/${id}`);
     }
 
-    TeacherDelete(){
-        return httpCommon.delete("/Teachers");
+    TeacherDelete(id){
+        return httpCommon.delete(`/Teachers/${id}`);
     }
 }
 

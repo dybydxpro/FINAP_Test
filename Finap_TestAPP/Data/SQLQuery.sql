@@ -125,8 +125,9 @@ EXEC sp_deleteOneClassRoom @ClassID = 1;
 CREATE PROCEDURE sp_getAllStudents
 AS
 BEGIN
-	SELECT StudentID, FirstName, LastName, ContactPerson, ContactNo, EmailAddress, DOB, Age, Classroom, Status
-	FROM tblStudents
+	SELECT s.StudentID, s.FirstName, s.LastName, s.ContactPerson, s.ContactNo, s.EmailAddress, s.DOB, s.Age, s.Classroom, s.Status, c.ClassroomID, c.ClassroomName, c.Status
+	FROM tblStudents s, tblClassRooms c
+	WHERE s.Classroom = c.ClassroomID
 END;
 
 EXEC sp_getAllStudents;

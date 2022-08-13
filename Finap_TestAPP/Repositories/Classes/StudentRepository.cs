@@ -1,5 +1,6 @@
 ﻿using Finap_TestAPP.Data;
 using Finap_TestAPP.Models;
+using Finap_TestAPP.Models.DTO;
 using Finap_TestAPP.Repositories.Interfaces;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,9 +9,9 @@ namespace Finap_TestAPP.Repositories.Classes
 {
     public class StudentRepository : DatabaseConfig, IStudentRepository
     {
-        public List<Student> GetStudents()
+        public List<StudentGetDTO> GetStudents()
         {
-            List<Student> students = new List<Student>();
+            List<StudentGetDTO> students = new List<StudentGetDTO>();
             try
             {
                 using (SqlConnection con = new SqlConnection(Connection))
@@ -25,7 +26,7 @@ namespace Finap_TestAPP.Repositories.Classes
                         adp.Fill(dt);
                         foreach (DataRow dr in dt.Rows)
                         {
-                            students.Add(new Student
+                            students.Add(new StudentGetDTO
                             {
                                 StudentID = Convert.ToInt32(dr[0]),
                                 FirstName = Convert.ToString(dr[1]),
@@ -36,7 +37,10 @@ namespace Finap_TestAPP.Repositories.Classes
                                 DOB = Convert.ToDateTime(dr[6]),
                                 Age = Convert.ToInt32(dr[7]),
                                 Classroom = Convert.ToInt32(dr[8]),
-                                Status = Convert.ToBoolean(dr[9])
+                                Status = Convert.ToBoolean(dr[9]),
+                                ClassroomID = Convert.ToInt32(dr[10]),
+                                ClassroomName = Convert.ToString(dr[11]),
+                                CStatus = Convert.ToBoolean(dr[12])
                             });
                         }
                     }
@@ -153,6 +157,7 @@ namespace Finap_TestAPP.Repositories.Classes
         {
             try
             {
+                obj.Age = Convert.ToInt32((DateTime.Now - obj.DOB).TotalDays / 365.25);
                 using (SqlConnection con = new SqlConnection(Connection))
                 {
                     using (SqlCommand cmd = new SqlCommand("[dbo].[sp_putOneStudent]", con))
