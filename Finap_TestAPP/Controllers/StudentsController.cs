@@ -101,5 +101,13 @@ namespace Finap_TestAPP.Controllers
                 return NotFound();
             }
         }
+
+
+        [HttpGet("DetailedReport")]
+        public async Task<ActionResult<List<StudentDetailDTO>>> GetDetailedReport()
+        {
+            List<StudentDetailDTO> students = _studentRepository.GetStudentsDetails().ToList();
+            return Ok(students);
+        }
     }
 }

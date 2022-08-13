@@ -5,6 +5,11 @@ import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
+import { Toggles } from 'react-bootstrap-icons';
 
 export default function Student(){
     const [data, setData] = useState([
@@ -28,10 +33,12 @@ export default function Student(){
             "status": false
         }
     ]);
+    const [detailedReports, setDetailedReports] = useState([{}]);
 
     useEffect(() => {
         fetchData();
         fetchClass();
+        fetchDetailedReport();
     },[]);
 
     function fetchData(){
@@ -53,6 +60,16 @@ export default function Student(){
             });
             setClassroom(dt);
             console.log(dt);
+        })
+        .catch(({response})=>{
+            console.log(response);
+        })
+    }
+
+    function fetchDetailedReport(){
+        Services.StudentDetailedReport().then(({data})=>{
+            setDetailedReports(data);
+            console.log(data);
         })
         .catch(({response})=>{
             console.log(response);
@@ -355,6 +372,24 @@ export default function Student(){
         }
     }
 
+    //Report Model
+    const [reportModel, setReportModel] = useState(false);
+    const [temp, setTemp] = useState([{}]);
+
+    const ReportModelHandleClose = () => setReportModel(false);
+    const ReportModelHandleShow = () => setReportModel(true);
+
+    function tempStudent(id){
+        var dt = [];
+        detailedReports.map((mydata) => {
+            if(mydata.studentID == id){
+                dt.push(mydata);
+            }
+        });
+        setTemp(dt);
+        console.log(dt);
+    }
+
     return(
         <div>
             <div className="row">
@@ -365,6 +400,100 @@ export default function Student(){
                     <Container fluid>
                         <div className="d-flex justify-content-center topheading">
                             <h2>List of Students.</h2>
+                        </div>
+
+                        <div className="d-flex justify-content-end mb-2">
+                            <DropdownButton
+                                as={ButtonGroup}
+                                key="Primary"
+                                id={`dropdown-variants-primary`}
+                                variant="primary"
+                                title={<><Toggles/> Options</>}>
+                                <Dropdown.Item eventKey="1" onClick={() => ReportModelHandleShow()}>Allocate className Name</Dropdown.Item>
+                                    <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" show={reportModel} onHide={() => ReportModelHandleClose()} centered>
+                                        <Modal.Header closeButton>
+                                            Student Detail Report
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <div>
+                                                <div className="segmentBorder2">
+                                                    <p>Student Details</p>
+
+                                                    <div className="row">
+                                                        <div className="col-2">
+                                                            <p>Student</p>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <select className="form-select" aria-label="Default select example" onChange={(e) => tempStudent(e.target.value)} id="studentID" placeholder="Classroom">
+                                                                <option value=""></option>
+                                                                {
+                                                                    data.map((mydata) => <option key={mydata.studentID} value={mydata.studentID}>{mydata.firstName + " " + mydata.lastName}</option>)
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <div className="col-2">
+                                                            <p>Classroom</p>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <input type="text" className="form-control" value={(temp[0].classroomName == undefined)?"":temp[0].classroomName} id="Classroom" readOnly/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row">
+                                                        <div className="col-2">
+                                                            <p>Contactor</p>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <input type="text" className="form-control" value={(temp[0].contactPerson == undefined)?"":temp[0].contactPerson} id="contactPerson" readOnly/>
+                                                        </div>
+                                                        <div className="col-2">
+                                                            <p>Email</p>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <input type="text" className="form-control" value={(temp[0].emailAddress == undefined)?"":temp[0].emailAddress} id="email" readOnly/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row">
+                                                        <div className="col-2">
+                                                            <p>Contact No.</p>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <input type="text" className="form-control" value={(temp[0].contactNo == undefined)?"":temp[0].contactNo} id="contactNumber" readOnly/>
+                                                        </div>
+                                                        <div className="col-2">
+                                                            <p>Date of Birth</p>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <input type="text" className="form-control" value={(((temp[0].dob)=="") || ((temp[0].dob)== undefined))?"":(temp[0].dob).substring(0,10)} id="dob" readOnly/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="segmentBorder2">
+                                                    <p>Teacher and Subject Details</p>
+
+                                                    <Table bordered hover>
+                                                        <thead>
+                                                            <tr className="table-info">
+                                                                <th className="text-center">Subject</th>
+                                                                <th className="text-center">Teacher</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {temp.map((dataset, index) =>
+                                                                <tr key={index}>
+                                                                    <td className="">{dataset.subjectName}</td>
+                                                                    <td className="">{dataset.tFirstName + " " + dataset.tLastName}</td>
+                                                                </tr>
+                                                            )}
+                                                            </tbody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        </Modal.Body>
+                                    </Modal>
+                            </DropdownButton>
                         </div>
 
                         <Table bordered hover>

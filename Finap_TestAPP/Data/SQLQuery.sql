@@ -443,6 +443,18 @@ END;
 
 EXEC sp_deleteOneAllocateClass @ACID = 1;
 
+-- Student Detailed Report
+
+CREATE PROCEDURE sp_getStudentDetailReport
+AS
+BEGIN
+	SELECT s.StudentID, s.FirstName, s.LastName, c.ClassroomName, s.ContactPerson, s.EmailAddress, s.ContactNo, s.DOB, b.SubjectName, t.FirstName, t.LastName
+	FROM tblStudents s, tblClassRooms c, tblSubjects b, tblTeachers t, tblAllocateSubject ast, tblAllocateClass act
+	WHERE t.TeacherID = act.TeacherID AND t.TeacherID = ast.TeacherID AND c.ClassroomID = act.ClassID AND s.Classroom = c.ClassroomID AND b.SubjectID = ast.SubjectID
+END;
+
+EXEC sp_getStudentDetailReport;
+
 
 
 

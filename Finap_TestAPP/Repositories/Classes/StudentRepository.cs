@@ -253,5 +253,48 @@ namespace Finap_TestAPP.Repositories.Classes
                 return false;
             }
         }
+
+
+        public List<StudentDetailDTO> GetStudentsDetails()
+        {
+            List<StudentDetailDTO> students = new List<StudentDetailDTO>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(Connection))
+                {
+                    using (SqlCommand cmd = new SqlCommand("[dbo].[sp_getStudentDetailReport]", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        if (con.State == ConnectionState.Closed)
+                            con.Open();
+                        SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adp.Fill(dt);
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            students.Add(new StudentDetailDTO
+                            {
+                                StudentID = Convert.ToInt32(dr[0]),
+                                FirstName = Convert.ToString(dr[1]),
+                                LastName = Convert.ToString(dr[2]),
+                                ClassroomName = Convert.ToString(dr[3]),
+                                ContactPerson = Convert.ToString(dr[4]),
+                                EmailAddress = Convert.ToString(dr[5]),
+                                ContactNo = Convert.ToString(dr[6]),
+                                DOB = Convert.ToDateTime(dr[7]),
+                                SubjectName = Convert.ToString(dr[8]),
+                                TFirstName = Convert.ToString(dr[9]),
+                                TLastName = Convert.ToString(dr[10])
+                            });
+                        }
+                    }
+                }
+                return students;
+            }
+            catch (Exception ex)
+            {
+                return students;
+            }
+        }
     }
 }

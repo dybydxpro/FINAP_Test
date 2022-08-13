@@ -16,5 +16,8 @@ namespace Finap_TestAPP.Repositories.Interfaces
         public bool DeleteSoftStudent(int id);
 
         public bool DeleteStudent(int id);
+
+
+        public List<StudentDetailDTO> GetStudentsDetails();
     }
 }

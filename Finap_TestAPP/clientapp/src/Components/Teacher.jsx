@@ -512,6 +512,7 @@ export default function Teacher(){
                                 <Dropdown.Item eventKey="2" onClick={() => handleClassModalShow()}>Allocate Class Name</Dropdown.Item>
                                     <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" show={showClassModal} onHide={() => handleClassModalClose()} centered>
                                         <Modal.Header closeButton>
+                                            Allocate Classroom
                                         </Modal.Header>
                                         <Modal.Body>
                                             <div>
@@ -567,6 +568,7 @@ export default function Teacher(){
                                 <Dropdown.Item eventKey="3" onClick={() => handleSubjectModalShow()}>Allocate Subjects</Dropdown.Item>
                                     <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" show={showSubjectModal} onHide={() => handleSubjectModalClose()} centered>
                                         <Modal.Header closeButton>
+                                            Allocate Subjects
                                         </Modal.Header>
                                         <Modal.Body>
                                             <div>

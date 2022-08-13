@@ -51,6 +51,10 @@ class Services{
         return httpCommon.delete(`/Students/${id}`);
     }
 
+    StudentDetailedReport(){
+        return httpCommon.get("/Students/DetailedReport");
+    }
+
     //Subjects Functions
     SubjectGetAll(){
         return httpCommon.get("/Subjects");
