@@ -362,9 +362,9 @@ export default function Student(){
                     <SlideBar />
                 </div>
                 <div className="col">
-                    <Container>
+                    <Container fluid>
                         <div className="d-flex justify-content-center topheading">
-                            <h2>Student</h2>
+                            <h2>List of Students.</h2>
                         </div>
 
                         <Table bordered hover>
@@ -379,7 +379,7 @@ export default function Student(){
                                     <th className="text-center">DOB</th>
                                     <th className="text-center">Age</th>
                                     <th className="text-center">Classroom</th>
-                                    <th className="text-center" style={{ width: "450px" }}>Option</th>
+                                    <th className="text-center" style={{ width: "400px" }}>Option</th>
                                 </tr>
                             </thead>
                             <tbody>

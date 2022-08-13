@@ -100,6 +100,31 @@ class Services{
     TeacherDelete(id){
         return httpCommon.delete(`/Teachers/${id}`);
     }
+
+    //Allocate Functions
+    AllocateClassGetAll(){
+        return httpCommon.get("/Allocate/Class");
+    }
+
+    AllocateClassPost(data){
+        return httpCommon.post("/Allocate/Class", data);
+    }
+
+    AllocateClassDelete(id){
+        return httpCommon.delete(`/Allocate/Class/${id}`);
+    }
+
+    AllocateSubjectGetAll(){
+        return httpCommon.get("/Allocate/Subject");
+    }
+
+    AllocateSubjectPost(data){
+        return httpCommon.post("/Allocate/Subject", data);
+    }
+
+    AllocateSubjectDelete(id){
+        return httpCommon.delete(`/Allocate/Subject/${id}`);
+    }
 }
 
 export default new Services();

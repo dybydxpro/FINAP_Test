@@ -46,6 +46,26 @@ CREATE TABLE tblSubjects(
 	CONSTRAINT tblSubjectUnqs UNIQUE (SubjectName)
 );
 
+CREATE TABLE tblAllocateSubject(
+	ASID INTEGER IDENTITY(1,1),
+	TeacherID INTEGER,
+	SubjectID INTEGER,
+	Status BIT,
+	CONSTRAINT tblAllocateSubjectPK PRIMARY KEY (ASID),
+	CONSTRAINT tblAllocateSubjectFK1 FOREIGN KEY (TeacherID) REFERENCES tblTeachers(TeacherID),
+	CONSTRAINT tblAllocateSubjectFK2 FOREIGN KEY (SubjectID) REFERENCES tblSubjects(SubjectID)
+);
+
+CREATE TABLE tblAllocateClass(
+	ACID INTEGER IDENTITY(1,1),
+	TeacherID INTEGER,
+	ClassID INTEGER,
+	Status BIT,
+	CONSTRAINT tblAllocateClassPK PRIMARY KEY (ACID),
+	CONSTRAINT tblAllocateClassFK1 FOREIGN KEY (TeacherID) REFERENCES tblTeachers(TeacherID),
+	CONSTRAINT tblAllocateClassFK2 FOREIGN KEY (ClassID) REFERENCES tblClassRooms(ClassroomID)
+);
+
 SELECT * FROM tblClassRooms;
 SELECT * FROM tblStudents;
 SELECT * FROM tblTeachers;
@@ -321,6 +341,108 @@ BEGIN
 END;
 
 EXEC sp_deleteOneSubject @SubjectID = 1;
+
+
+--Allocate Subjects
+
+CREATE PROCEDURE sp_getAllAllocateSubjects
+AS
+BEGIN
+	SELECT a.ASID, t.TeacherID, t.FirstName, t.LastName, t.ContactNo, t.EmailAddress, t.Status, s.SubjectID, s.SubjectName, s.Status
+	FROM tblTeachers t, tblSubjects s, tblAllocateSubject a
+	WHERE t.TeacherID = a.TeacherID AND s.SubjectID = a.SubjectID
+END;
+
+EXEC sp_getAllAllocateSubjects;
+
+CREATE PROCEDURE sp_getOneAllocateSubject(@ASID INTEGER)
+AS
+BEGIN
+	SELECT ASID, TeacherID, SubjectID, Status
+	FROM tblAllocateSubject
+	WHERE ASID = @ASID
+END;
+
+EXEC sp_getOneAllocateSubject @ASID = 1;
+
+CREATE PROCEDURE sp_postOneAllocateSubject(@TeacherID INTEGER, @SubjectID INTEGER)
+AS
+BEGIN
+	INSERT INTO tblAllocateSubject(TeacherID, SubjectID, Status)
+	VALUES (@TeacherID, @SubjectID, 1)
+END;
+
+EXEC sp_postOneAllocateSubject @TeacherID = 1, @SubjectID = 2;
+
+CREATE PROCEDURE sp_putOneAllocateSubject(@ASID INTEGER, @TeacherID INTEGER, @SubjectID INTEGER)
+AS
+BEGIN
+	UPDATE tblAllocateSubject
+	SET TeacherID = @TeacherID, SubjectID = @SubjectID
+	WHERE ASID = @ASID
+END;
+
+EXEC sp_putOneAllocateSubject @ASID = 1, @TeacherID = 1, @SubjectID = 3;
+
+CREATE PROCEDURE sp_deleteOneAllocateSubject(@ASID INTEGER)
+AS
+BEGIN
+	DELETE FROM tblAllocateSubject
+	WHERE ASID = @ASID
+END;
+
+EXEC sp_deleteOneAllocateSubject @ASID = 1;
+
+--Allocate Classes
+
+CREATE PROCEDURE sp_getAllAllocateClasses
+AS
+BEGIN
+	SELECT a.ACID, t.TeacherID, t.FirstName, t.LastName, t.ContactNo, t.EmailAddress, t.Status, c.ClassroomID, c.ClassroomName, c.Status
+	FROM tblTeachers t, tblClassRooms c, tblAllocateClass a
+	WHERE t.TeacherID = a.TeacherID AND c.ClassroomID = a.ClassID
+END;
+
+EXEC sp_getAllAllocateClasses;
+
+CREATE PROCEDURE sp_getOneAllocateClass(@ACID INTEGER)
+AS
+BEGIN
+	SELECT ACID, TeacherID, ClassID, Status
+	FROM tblAllocateClass
+	WHERE ACID = @ACID
+END;
+
+EXEC sp_getOneAllocateClass @ACID = 1;
+
+CREATE PROCEDURE sp_postOneAllocateClass(@TeacherID INTEGER, @ClassID INTEGER)
+AS
+BEGIN
+	INSERT INTO tblAllocateClass(TeacherID, ClassID, Status)
+	VALUES (@TeacherID, @ClassID, 1)
+END;
+
+EXEC sp_postOneAllocateClass @TeacherID = 1, @ClassID = 2;
+
+CREATE PROCEDURE sp_putOneAllocateClass(@ACID INTEGER, @TeacherID INTEGER, @ClassID INTEGER)
+AS
+BEGIN
+	UPDATE tblAllocateClass
+	SET TeacherID = @TeacherID, ClassID = @ClassID
+	WHERE ACID = @ACID
+END;
+
+EXEC sp_putOneAllocateClass @ACID = 1, @TeacherID = 1, @ClassID = 3;
+
+CREATE PROCEDURE sp_deleteOneAllocateClass(@ACID INTEGER)
+AS
+BEGIN
+	DELETE FROM tblAllocateClass
+	WHERE ACID = @ACID
+END;
+
+EXEC sp_deleteOneAllocateClass @ACID = 1;
+
 
 
 

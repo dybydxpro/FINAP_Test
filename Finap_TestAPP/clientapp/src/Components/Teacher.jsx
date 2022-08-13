@@ -5,6 +5,11 @@ import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
+import { Toggles } from 'react-bootstrap-icons';
 
 export default function Teacher(){
     const [data, setData] = useState([
@@ -18,13 +23,82 @@ export default function Teacher(){
           }
     ]);
 
+    const [activeTeachers, setActiveTeachers] = useState([]);
+    const [activeClassrooms, setActiveClassrooms] = useState([]);
+    const [activeSubjects, setActiveSubjects] = useState([]);
+    const [allocateClass, setAllocateClass] = useState([]);
+    const [tempAllocateClass, setTempAllocateClass] = useState([]);
+    const [allocateSubject, setAllocateSubject] = useState([]);
+    const [tempAllocateSubject, setTempAllocateSubject] = useState([]);
+
     useEffect(() => {
         fetchData();
+        fetchClass();
+        fetchSubject();
+        fetchAllocateClass();
+        fetchAllocateSubject();
     },[]);
 
     function fetchData(){
+        var dt = [];
         Services.TeacherGetAll().then(({data})=>{
-            setData(data)
+            setData(data);
+            data.map((mydata) => {
+                if(mydata.status == true){
+                    dt.push(mydata);
+                }
+            });
+            setActiveTeachers(dt);
+        })
+        .catch(({response})=>{
+            console.log(response);
+        })
+    }
+
+    function fetchClass(){
+        var dt = [];
+        Services.ClassroomGetAll().then(({data})=>{
+            data.map((mydata) => {
+                if(mydata.status == true){
+                    dt.push(mydata);
+                }
+            });
+            setActiveClassrooms(dt);
+            console.log(dt);
+        })
+        .catch(({response})=>{
+            console.log(response);
+        })
+    }
+
+    function fetchSubject(){
+        var dt = [];
+        Services.SubjectGetAll().then(({data})=>{
+            data.map((mydata) => {
+                if(mydata.status == true){
+                    dt.push(mydata);
+                }
+            });
+            setActiveSubjects(dt);
+            console.log(dt);
+        })
+        .catch(({response})=>{
+            console.log(response);
+        })
+    }
+
+    function fetchAllocateClass(){
+        Services.AllocateClassGetAll().then(({data})=>{
+            setAllocateClass(data);
+        })
+        .catch(({response})=>{
+            console.log(response);
+        })
+    }
+
+    function fetchAllocateSubject(){
+        Services.AllocateSubjectGetAll().then(({data})=>{
+            setAllocateSubject(data);
         })
         .catch(({response})=>{
             console.log(response);
@@ -268,6 +342,154 @@ export default function Teacher(){
         }
     }
 
+
+    //Alocate className Modal
+    const [showClassModal, setShowClassModal] = useState(false);
+    const [addNewAC, setAddNewAC] = useState({});
+
+    const handleClassModalClose = () => setShowClassModal(false);
+    const handleClassModalShow = () => setShowClassModal(true);
+
+    function allocateTeacher(id){
+        var dt = [];
+        allocateClass.map((mydata) => {
+            if(mydata.teacherID == id){
+                dt.push(mydata);
+            }
+        });
+        setTempAllocateClass(dt);
+    }
+
+    function handleAC(e){
+        const newData = {...addNewAC};
+        newData[e.target.id] = e.target.value;
+        setAddNewAC(newData);
+        console.log(newData);
+    }
+
+    function AddACValidate(){
+        const newData = {...addNewAC};
+        if(newData["teacherID"] === "" || newData["teacherID"] === undefined){
+            console.log("teacherID");
+            return false;
+        }
+        else if(newData["classID"] === "" || newData["classID"] === undefined){
+            console.log("classID");
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    function AddAC(){
+        var dt = ({
+            "teacherID": addNewAC.teacherID,
+            "classID": addNewAC.classID
+        });
+        if(AddACValidate()){
+            Services.AllocateClassPost(dt)
+            .then(({data}) =>{
+                console.log(data);
+                fetchAllocateClass();
+                setInterval(allocateTeacher(Number(dt.teacherID)) , 5000);
+                //allocateTeacher(Number(dt.teacherID))
+            }).catch(({response})=>{
+                console.log(response);
+                alert(response);
+            })
+        }
+        else{
+            alert("Validation Failed!");
+        }
+    }
+
+    function DeallocateClass(id){
+        Services.AllocateClassDelete(id)
+        .then(({data}) =>{
+            console.log(data);
+            fetchAllocateClass();
+            setInterval(allocateTeacher(Number(sessionStorage.getItem("tid"))) , 5000);
+        }).catch(({response})=>{
+            console.log(response);
+            alert(response);
+        })
+    }
+
+    //Alocate Subject Modal
+    const [showSubjectModal, setShowSubjectModal] = useState(false);
+    const [addNewAS, setAddNewAS] = useState({});
+
+    const handleSubjectModalClose = () => setShowSubjectModal(false);
+    const handleSubjectModalShow = () => setShowSubjectModal(true);
+
+    function allocateTeacherS(id){
+        var dt = [];
+        allocateSubject.map((mydata) => {
+            if(mydata.teacherID == id){
+                dt.push(mydata);
+            }
+        });
+        setTempAllocateSubject(dt);
+    }
+
+    function handleAS(e){
+        const newData = {...addNewAS};
+        newData[e.target.id] = e.target.value;
+        setAddNewAS(newData);
+        console.log(newData);
+    }
+
+    function AddASValidate(){
+        const newData = {...addNewAS};
+        if(newData["teacherID"] === "" || newData["teacherID"] === undefined){
+            console.log("teacherID");
+            return false;
+        }
+        else if(newData["subjectID"] === "" || newData["subjectID"] === undefined){
+            console.log("subjectID");
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    function AddAS(){
+        var dt = ({
+            "teacherID": addNewAS.teacherID,
+            "subjectID": addNewAS.subjectID
+        });
+        if(AddASValidate()){
+            Services.AllocateSubjectPost(dt)
+            .then(({data}) =>{
+                console.log(data);
+                fetchAllocateSubject();
+                setInterval(allocateTeacher(Number(dt.teacherID)) , 5000);
+                //allocateTeacher(Number(dt.teacherID))
+            }).catch(({response})=>{
+                console.log(response);
+                alert(response);
+            })
+        }
+        else{
+            alert("Validation Failed!");
+        }
+    }
+
+    function DeallocateSubject(id){
+        Services.AllocateSubjectDelete(id)
+        .then(({data}) =>{
+            console.log(data);
+            fetchAllocateSubject();
+            setInterval(allocateTeacherS(Number(sessionStorage.getItem("tid"))) , 5000);
+        }).catch(({response})=>{
+            console.log(response);
+            alert(response);
+        })
+    }
+
+
     return(
         <div>
             <div className="row">
@@ -277,7 +499,127 @@ export default function Teacher(){
                 <div className="col">
                     <Container>
                         <div className="d-flex justify-content-center topheading">
-                            <h2>Student</h2>
+                            <h2>List of Teachers.</h2>
+                        </div>
+
+                        <div className="d-flex justify-content-end mb-2">
+                            <DropdownButton
+                                as={ButtonGroup}
+                                key="Primary"
+                                id={`dropdown-variants-primary`}
+                                variant="primary"
+                                title={<><Toggles/> Options</>}>
+                                <Dropdown.Item eventKey="2" onClick={() => handleClassModalShow()}>Allocate Class Name</Dropdown.Item>
+                                    <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" show={showClassModal} onHide={() => handleClassModalClose()} centered>
+                                        <Modal.Header closeButton>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <div>
+                                                <div className="segmentBorder">
+                                                    <p>Teachers Details</p>
+                                                    <div className="d-flex">
+                                                        <p className="modelText">Teacher   </p>
+                                                        <select className="form-select modelSelect" aria-label="Default select example"  id="teacherID" onChange={(e) => {handleAC(e); sessionStorage.setItem("tid", e.target.value)}} placeholder="Classroom">
+                                                            <option value=""></option>
+                                                            {
+                                                                activeTeachers.map(mydata => <option key={mydata.teacherID} value={mydata.teacherID}>{mydata.firstName + " " + mydata.lastName}</option>)
+                                                            }
+                                                        </select>
+                                                        <button type="button" className="btn btn-primary mx-5" onClick={() =>  allocateTeacher(Number(sessionStorage.getItem("tid")))}>Save</button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="segmentBorder">
+                                                    <p>Allocate Classroom</p>
+                                                    <div className="d-flex mb-3">
+                                                        <p className="modelText">Classroom   </p>
+                                                        <select className="form-select modelSelect" aria-label="Default select example"  id="classID" onChange={(e) => {handleAC(e);}} placeholder="Classroom">
+                                                            <option value=""></option>
+                                                            {
+                                                                activeClassrooms.map(mydata => <option key={mydata.classroomID} value={mydata.classroomID}>{mydata.classroomName}</option>)
+                                                            }
+                                                        </select>
+                                                        <button type="button" className="btn btn-primary mx-5" onClick={()=>AddAC()}>Allocate</button>
+                                                    </div>
+
+                                                    <Table bordered hover>
+                                                        <thead>
+                                                            <tr className="table-info">
+                                                                <th className="text-center">Classroom</th>
+                                                                <th className="text-center" style={{ width: "150px" }}>Option</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {tempAllocateClass.map((dataset, index) =>
+                                                                <tr key={index+1} className={dataset.status==true?"":"table-secondary"}>
+                                                                    <td className="">{dataset.classroomName}</td>
+                                                                    <td className="text-center">
+                                                                        <button type="button" className="btn btn-danger mx-5" onClick={() => DeallocateClass(dataset.acid)}>Deallocate</button>
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        </tbody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        </Modal.Body>
+                                    </Modal>
+                                <Dropdown.Item eventKey="3" onClick={() => handleSubjectModalShow()}>Allocate Subjects</Dropdown.Item>
+                                    <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" show={showSubjectModal} onHide={() => handleSubjectModalClose()} centered>
+                                        <Modal.Header closeButton>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <div>
+                                                <div className="segmentBorder">
+                                                    <p>Teachers Details</p>
+                                                    <div className="d-flex">
+                                                        <p className="modelText">Teacher   </p>
+                                                        <select className="form-select modelSelect" aria-label="Default select example"  id="teacherID" onChange={(e) => {handleAS(e); sessionStorage.setItem("tid", e.target.value)}} placeholder="Classroom">
+                                                            <option value=""></option>
+                                                            {
+                                                                activeTeachers.map(mydata => <option key={mydata.teacherID} value={mydata.teacherID}>{mydata.firstName + " " + mydata.lastName}</option>)
+                                                            }
+                                                        </select>
+                                                        <button type="button" className="btn btn-primary mx-5" onClick={() =>  allocateTeacherS(Number(sessionStorage.getItem("tid")))}>Save</button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="segmentBorder">
+                                                    <p>Allocate Subjects</p>
+                                                    <div className="d-flex mb-3">
+                                                        <p className="modelText">Subject   </p>
+                                                        <select className="form-select modelSelect" aria-label="Default select example"  id="subjectID" onChange={(e) => {handleAS(e);}} placeholder="Classroom">
+                                                            <option value=""></option>
+                                                            {
+                                                                activeSubjects.map(mydata => <option key={mydata.subjectID} value={mydata.subjectID}>{mydata.subjectName}</option>)
+                                                            }
+                                                        </select>
+                                                        <button type="button" className="btn btn-primary mx-5" onClick={()=>AddAS()}>Allocate</button>
+                                                    </div>
+
+                                                    <Table bordered hover>
+                                                        <thead>
+                                                            <tr className="table-info">
+                                                                <th className="text-center">Classroom</th>
+                                                                <th className="text-center" style={{ width: "150px" }}>Option</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {tempAllocateSubject.map((dataset, index) =>
+                                                                <tr key={index+1} className={dataset.status==true?"":"table-secondary"}>
+                                                                    <td className="">{dataset.subjectName}</td>
+                                                                    <td className="text-center">
+                                                                        <button type="button" className="btn btn-danger mx-5" onClick={() => DeallocateSubject(dataset.asid)}>Deallocate</button>
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        </tbody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        </Modal.Body>
+                                    </Modal>
+                            </DropdownButton>
                         </div>
 
                         <Table bordered hover>

@@ -209,7 +209,7 @@ export default function Classroom(){
                 <div className="col">
                     <Container>
                         <div className="d-flex justify-content-center topheading">
-                            <h2>Classroom</h2>
+                            <h2>List of Classrooms.</h2>
                         </div>
 
                         <Table bordered hover>

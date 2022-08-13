@@ -21,6 +21,7 @@ builder.Services.AddControllers();
 
 //DI
 
+builder.Services.AddScoped<IAllocationRepository, AllocationRepository>();
 builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();

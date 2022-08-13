@@ -209,7 +209,7 @@ export default function Subject(){
                 <div className="col">
                     <Container>
                         <div className="d-flex justify-content-center topheading">
-                            <h2>Subject</h2>
+                            <h2>List of Subjects.</h2>
                         </div>
 
                         <Table bordered hover>
