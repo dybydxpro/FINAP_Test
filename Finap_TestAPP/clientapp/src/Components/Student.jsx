@@ -185,7 +185,7 @@ export default function Student(){
             console.log("contactPerson");
             return false;
         }
-        else if(newData["contactNo"] === "" || newData["contactNo"] === undefined){
+        else if(newData["contactNo"] === "" || newData["contactNo"] === undefined || (newData["contactNo"]).length < 10){
             console.log("contactNo");
             return false;
         }
@@ -292,7 +292,7 @@ export default function Student(){
             console.log("contactPerson");
             return false;
         }
-        else if(newData["contactNo"] === "" || newData["contactNo"] === undefined){
+        else if(newData["contactNo"] === "" || newData["contactNo"] === undefined || (newData["contactNo"]).length < 10){
             console.log("contactNo");
             return false;
         }
